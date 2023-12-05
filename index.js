@@ -8,7 +8,7 @@ import { Snowflake } from "@theinternetfolks/snowflake";
 
 const client = createClient({
     url: "libsql://links-pradyuprasad.turso.io",
-    authToken: process.env.TURSO_TOKEN
+    authToken: process.env.TURSO_TOKEN // added turso token
 })
 
 bot.start((ctx) => createUser(ctx))
