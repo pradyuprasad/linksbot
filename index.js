@@ -12,6 +12,7 @@ const client = createClient({
 })
 
 bot.start((ctx) => createUser(ctx))
+bot.on('text', (ctx) => savetext(ctx))
 bot.launch()
 
 async function createUser(ctx) { 
@@ -55,6 +56,16 @@ async function createUser(ctx) {
     
 
 }
+
+   
+function savetext(ctx){
+
+    
+
+}    
+
+    
+
 
 
 async function create_table_users(){
