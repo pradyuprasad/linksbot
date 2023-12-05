@@ -8,13 +8,13 @@ import { Snowflake } from "@theinternetfolks/snowflake";
 
 const client = createClient({
     url: "libsql://links-pradyuprasad.turso.io",
-    authToken: process.env.TURSO_TOKEN // added turso token
+    authToken: process.env.TURSO_TOKEN 
 })
 
 bot.start((ctx) => createUser(ctx))
 bot.launch()
 
-async function createUser(ctx) { // create user
+async function createUser(ctx) { 
     
     const telegram_id = ctx.update.message.from.id
 
@@ -73,7 +73,7 @@ async function drop_table(table){
 }
 
 
-async function clearTable(tableName){ // clear table
+async function clearTable(tableName){ 
     let res = await client.execute(`DELETE FROM ${tableName}`)
     console.log(res)
 }
