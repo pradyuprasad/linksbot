@@ -73,7 +73,7 @@ async function drop_table(table){
 }
 
 
-async function clearTable(tableName){
+async function clearTable(tableName){ // clear table
     let res = await client.execute(`DELETE FROM ${tableName}`)
     console.log(res)
 }
