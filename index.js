@@ -14,7 +14,7 @@ const client = createClient({
 bot.start((ctx) => createUser(ctx))
 bot.launch()
 
-async function createUser(ctx) {
+async function createUser(ctx) { // create user
     
     const telegram_id = ctx.update.message.from.id
 
