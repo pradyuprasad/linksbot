@@ -4,6 +4,7 @@ import 'dotenv/config'
 const bot = new Telegraf(process.env.BOT_TOKEN)
 import { createClient } from "@libsql/client/web"; 
 import { Snowflake } from "@theinternetfolks/snowflake";
+import checkUrl from './urlchecker.js'
 
 
 
@@ -60,8 +61,8 @@ async function createUser(ctx) {
 
    
 function savetext(ctx){
-
     
+    console.log(ctx)
 
 }    
 
