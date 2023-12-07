@@ -15,6 +15,6 @@
 4d. if tag not in table, insert and make mapping in links-tag table
 
 helper functions to write
-1. check if string is url
+1. check if string is url - DONE
 2. strip out useless stuff from links
 3. get title from url
