@@ -71,7 +71,7 @@ async function savetext(ctx){
     if (tags.length === 0) {
         try {
 
-            //ctx.reply(getTitle(link))
+            ctx.reply(getTitle(link))
 
         }
 

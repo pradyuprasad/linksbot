@@ -33,9 +33,4 @@ function getTitle(url, callback) {
   });
 }
 
-async function titlegetter(title) {
-  const result = await getTitle(title);
-  return result
-}
-console.log(titlegetter('https://www.modular.com/blog/how-mojo-gets-a-35-000x-speedup-over-python-part-1'))
 export default getTitle
