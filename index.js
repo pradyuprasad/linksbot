@@ -7,6 +7,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 import { createClient } from "@libsql/client/web"; 
 import { Snowflake } from "@theinternetfolks/snowflake";
 import checkUrl from './urlchecker.js'
+import getTitle from './title.js'
 
 
 
@@ -62,9 +63,27 @@ async function createUser(ctx) {
 }
 
    
-function savetext(ctx){
-    
-    console.log(ctx)
+async function savetext(ctx){
+    const input = ctx.update.message.text
+    const split_input = input.split(' ')
+    const link = split_input[0]
+    const tags = split_input.slice(1)
+    if (tags.length === 0) {
+        try {
+
+            //ctx.reply(getTitle(link))
+
+        }
+
+        catch(e) {
+            ctx.reply(e)
+
+        } 
+    }
+
+    else {
+
+    }
 
 }    
 
