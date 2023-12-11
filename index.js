@@ -1,4 +1,4 @@
-/*
+
 
 import pkg from 'telegraf';
 const {Telegraf} = pkg;
@@ -103,4 +103,3 @@ async function create_table_linktags(){
 }
 
 
-*/
