@@ -1,3 +1,5 @@
+/*
+
 import pkg from 'telegraf';
 const {Telegraf} = pkg;
 import 'dotenv/config'
@@ -100,3 +102,5 @@ async function create_table_linktags(){
     console.log(res)
 }
 
+
+*/
