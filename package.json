@@ -11,6 +11,8 @@
         "dotenv": "^16.3.1",
         "get-title-at-url": "^2.0.0",
         "jquery": "^3.7.1",
-        "telegraf": "^4.15.3"
+        "jsdom": "^23.0.1",
+        "telegraf": "^4.15.3",
+        "xmldom": "^0.6.0"
     }
 }
