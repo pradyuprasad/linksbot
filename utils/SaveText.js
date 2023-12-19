@@ -10,6 +10,8 @@ const client = createClient({
 
 
 async function SaveText(ctx){
+
+
     const input = ctx.update.message.text
     const split_input = input.split(' ')
     const link = split_input[0]
@@ -18,31 +20,41 @@ async function SaveText(ctx){
 
     // we start input validation on the link
 
-    
 
-    if (tags.length == 0) {
-        console.log("zero tags")
+    const valid_link = await checkUrl(link)
+
+    console.log("the link validity is", valid_link)
+
+    if (!valid_link){
+
+        ctx.reply("that link is not valid")
+        return
+
+        
     }
 
     else {
-        console.log("tags exist")
-    }
-    /*if (tags.length === 0) {
-        try {
+        ctx.reply("that is a valid link")
 
-            ctx.reply(getTitle(link))
-
+        if (tags.length == 0) {
+            console.log("zero tags")
+        }
+    
+        else {
+            console.log("tags exist")
+            const linkcheck = tags.map(await checkUrl)
+            Promise.all(linkcheck)
+            console.log(linkcheck)
+            /*const linkexists = linkcheck.reduce((a || b), true)
+            console.log(linkexists)*/
         }
 
-        catch(e) {
-            ctx.reply(e)
-
-        } 
     }
 
-    else {
 
-    }*/
+    
+
+   
 
 }    
 
