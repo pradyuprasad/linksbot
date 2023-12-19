@@ -12,6 +12,19 @@ async function CheckForLinks(tags){
     return linkexists
 }
 
+function get_id(tag, result) {
+    const found = result.find(element => element.tag_name == tag)
+    if (found) {
+
+        return found.tag_id
+
+    }
+
+    else {
+        return null
+    }
+}
+
 async function SaveText(ctx, client){
 
     const input = ctx.update.message.text
@@ -34,8 +47,7 @@ async function SaveText(ctx, client){
     else if (LinksInTags){
         
     ctx.reply("One link at a time please") // permanent reply
-
-
+    return 
     }
 
     else {
@@ -72,22 +84,102 @@ async function SaveText(ctx, client){
                 const result = search.rows
 
                 if (result.length == 0) {
+                    for (let i = 0; i < tags.length; i += 1) {
+                        console.log("this is run ", i)
+                        const tag_id = Snowflake.generate()
+                        const tag_name = tags[i]
 
-                    tag_id = Snowflake.generate()
+                        try {
 
+                            const tag_insert = await client.execute({
+                                sql: 'insert into tags (tag_id, tag_name) values(:tag_id, :tag_name)',
+                                args: {tag_id: tag_id, tag_name: tag_name}
+                            })
+
+                            console.log(tag_insert)
+
+                            const link_tags_insert = await client.execute({
+                                sql: 'insert into link_tags (link_id, tag_id) values(:link_id, :tag_id)',
+                                args: {link_id: link_id, tag_id: tag_id}
+                            })
+
+                            console.log(link_tags_insert)
+
+                            ctx.reply("The link and tags have been inserted")
+
+                        }
+
+                        catch(e) {
+                            console.log("error")
+                            ctx.reply(e)
+                            console.log(e)
+                        }
+                    }
 
                 }
 
                 else {
 
+                    for (let i = 0; i < tags.length; i += 1) {
+                        console.log("this is run with non-zero tags", i)
+                        const search_tag = get_id(tags[i], result)
+                        const tag_id = search_tag == null ? Snowflake.generate() : search_tag
+                        const tag_name = tags[i]
+
+                        if (search_tag == null) {
+                            // if the tag does not exist before
+                            try {
+
+                                const tag_insert = await client.execute({
+                                    sql: 'insert into tags (tag_id, tag_name) values(:tag_id, :tag_name)',
+                                    args: {tag_id: tag_id, tag_name: tag_name}
+                                })
+    
+                                console.log(tag_insert)
+                            }
+
+                            catch(e) {
+                                console.log("error")
+                                ctx.reply(e)
+                                console.log(e)
+
+                            }
+                        
+                    }
+
+                        else {
+                            // do nothing because the tag is already inside the tags database
+                        }
+
+                        try {
+                            const link_tags_insert = await client.execute({
+                                sql: 'insert into link_tags (link_id, tag_id) values(:link_id, :tag_id)',
+                                args: {link_id: link_id, tag_id: tag_id}
+                            })
+
+                            console.log(link_tags_insert)
+
+                            ctx.reply("The link and tags have been inserted")
+
+
+                        }
+
+                        catch(e) {
+                            console.log("error")
+                            ctx.reply(e)
+                            console.log(e)
+                        }
+
                 }
-            }
-            catch(e){
+            } 
+        }
+        
+        catch(e){
 
-                ctx.reply(e)
-                console.log(e)
+            ctx.reply(e)
+            console.log(e)
 
-            }
+        }
 
             
             
