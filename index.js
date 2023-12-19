@@ -9,6 +9,7 @@ import { Snowflake } from "@theinternetfolks/snowflake";
 import checkUrl from './utils/UrlChecker.js'
 import getTitle from './utils/GetTitle.js'
 import CreateUser from './utils/CreateUser.js'
+import SaveText from './utils/SaveText.js'
 
 
 
@@ -18,35 +19,10 @@ const client = createClient({
 })
 
 bot.start((ctx) => CreateUser(ctx))
-bot.on('text', (ctx) => savetext(ctx))
+bot.on('text', (ctx) => SaveText(ctx))
 bot.launch()
 
    
-async function savetext(ctx){
-    const input = ctx.update.message.text
-    const split_input = input.split(' ')
-    const link = split_input[0]
-    const tags = split_input.slice(1)
-    if (tags.length === 0) {
-        try {
-
-            ctx.reply(getTitle(link))
-
-        }
-
-        catch(e) {
-            ctx.reply(e)
-
-        } 
-    }
-
-    else {
-
-    }
-
-}    
-
-    
 
 
 
