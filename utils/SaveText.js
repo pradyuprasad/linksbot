@@ -35,14 +35,14 @@ async function SaveText(ctx, client){
             console.log("zero tags")
             const link_id = Snowflake.generate()
             const link_url = link
-            //const link_title = title
+            const link_title = title
             const telegram_id = ctx.update.message.from.id
             const timestamp = Date.now()
             try {
 
                 console.log("inserting")
 
-                const result = client.execute({
+                const result = await client.execute({
                     sql:'INSERT INTO links(link_id, link_url, link_title, telegram_id, timestamp) values(:link_id, :link_url, :link_title, :telegram_id, :timestamp)',
                     
                     args : {link_id: link_id, link_url: link_url, link_title: link_title, telegram_id: telegram_id,  timestamp:timestamp}})
@@ -53,21 +53,18 @@ async function SaveText(ctx, client){
 
             catch(e) {
 
-                ctx.reply(e)
+                console.log("error")
+
+                //ctx.reply(e)
                 console.log(e)
 
             }
             
         }
     
-        else {  
-            console.log("tags exist")
-            const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
-            console.log("linkcheck is ", linkcheck)
-            const linkexists = linkcheck.reduce((a, b) => (a || b), false)
-            console.log("link exists is", linkexists)
+        else {              
 
-            if (linkexists){
+            if (CheckForLinks(tags)){
                 ctx.reply("Sorry please include only one link at a time") // permanent reply
             }
 
@@ -89,18 +86,17 @@ async function SaveText(ctx, client){
 
 }    
 
-function modifyURL_to_https(input){
-    if (input.slice(0, 8) == 'https://' || input.slice(0, 7) == "http://") {
-        //console.log("it is a https link")
-        return input
+async function CheckForLinks(tags){
 
-    }
+    const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
+    console.log("linkcheck is ", linkcheck)
+    const linkexists = linkcheck.reduce((a, b) => (a || b), false)
+    console.log("link exists is", linkexists)
 
-    else {
-        input = 'https://' + input
-        return input
-    }
+    return linkexists
+
+
+
 }
-
     
 export default SaveText

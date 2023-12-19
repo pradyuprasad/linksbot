@@ -18,7 +18,7 @@ const client = createClient({
 
 
 bot.start((ctx) => CreateUser(ctx, client))
-bot.on('text', (ctx) => SaveText(ctx))
+bot.on('text', (ctx) => SaveText(ctx, client))
 bot.launch()
 
    
