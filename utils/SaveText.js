@@ -1,15 +1,8 @@
-import { createClient } from "@libsql/client/web"; 
 import { Snowflake } from "@theinternetfolks/snowflake";
-import checkUrl from './UrlChecker.js'
-import getTitle from './GetTitle.js'
+import {checkUrl} from './UrlChecker.js'
+//import getTitle from './GetTitle.js'
 
-const client = createClient({
-    url: "libsql://links-pradyuprasad.turso.io",
-    authToken: process.env.TURSO_TOKEN 
-})
-
-
-async function SaveText(ctx){
+async function SaveText(ctx, client){
 
 
     const input = ctx.update.message.text
@@ -35,17 +28,17 @@ async function SaveText(ctx){
     }
 
     else {
-        const title = await getTitle(link)
+        //const title = await getTitle(link)
         console.log("that is a valid link") // debug statement
 
         if (tags.length == 0) {
             console.log("zero tags")
             const link_id = Snowflake.generate()
             const link_url = link
-            const link_title = title
+            //const link_title = title
             const telegram_id = ctx.update.message.from.id
             const timestamp = Date.now()
-            try {
+            /*try {
 
                 console.log("inserting")
 
@@ -63,7 +56,7 @@ async function SaveText(ctx){
                 ctx.reply(e)
                 console.log(e)
 
-            }
+            }*/
             
         }
     
@@ -95,6 +88,19 @@ async function SaveText(ctx){
    
 
 }    
+
+function modifyURL_to_https(input){
+    if (input.slice(0, 8) == 'https://' || input.slice(0, 7) == "http://") {
+        //console.log("it is a https link")
+        return input
+
+    }
+
+    else {
+        input = 'https://' + input
+        return input
+    }
+}
 
     
 export default SaveText

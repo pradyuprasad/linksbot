@@ -1,14 +1,8 @@
-import { createClient } from "@libsql/client/web"; 
 import { Snowflake } from "@theinternetfolks/snowflake";
 
-const client = createClient({
-    url: "libsql://links-pradyuprasad.turso.io",
-    authToken: process.env.TURSO_TOKEN 
-})
 
 
-
-async function CreateUser(ctx) { 
+async function CreateUser(ctx, client) { 
     
     const telegram_id = ctx.update.message.from.id
 

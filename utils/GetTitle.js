@@ -1,4 +1,5 @@
-import fetch from 'node-fetch';
+/*import fetch from 'node-fetch';
+//import checkUrl from './UrlChecker.js'
 import { JSDOM } from 'jsdom';
 
 async function get_title(url) { 
@@ -17,8 +18,13 @@ async function get_title(url) {
 
 
 async function TitleGet(url) {
+    //const valid 
     const result = await get_title(url)
     return result
 }
 
-export default TitleGet
+const url = 'www.google.com'
+
+console.log(await TitleGet(url))
+
+export default TitleGet*/

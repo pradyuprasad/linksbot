@@ -103,4 +103,4 @@ const url = 'goole.com'
 
 //console.log(await checkUrl(url))
 
-export default checkUrl
+export {checkUrl, urlcheck_https, urlcheck_http}
