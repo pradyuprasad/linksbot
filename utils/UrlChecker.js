@@ -11,11 +11,13 @@ function urlcheck_https(input) {
         
         https.get(input, options, (response) => {
 
-            console.log("starting https checking!!")
+            ////console.log("starting https checking!!")
 
             if (response.statusCode > 300 && response.statusCode < 400) {
 
-                console.log("redirect")
+                
+                
+                //console.log("redirect")
 
                 resolve(urlcheck_https(response.headers.location))
 
@@ -25,11 +27,11 @@ function urlcheck_https(input) {
             }
 
             else {
-                console.log("status code is", response.statusCode)
+                //console.log("status code is", response.statusCode)
                 resolve(false)
             }
         }).on('error', (error) => { 
-            console.log("error in http request", error.message)
+            //console.log("error in http request", error.message)
             resolve(false)})
     })
 }
@@ -44,10 +46,10 @@ function urlcheck_http(input) {
         }; 
         
         http.get(input, options, (response) => {
-            console.log("starting http checking!!")
+            //console.log("starting http checking!!")
             if (response.statusCode > 300 && response.statusCode < 400) {
 
-                console.log("redirect")
+                //console.log("redirect")
 
                 resolve(urlcheck_http(response.headers.location))
 
@@ -57,36 +59,36 @@ function urlcheck_http(input) {
             }
 
             else {
-                console.log("status code is", response.statusCode)
+                //console.log("status code is", response.statusCode)
                 resolve(false)
             }
         }).on('error', (error) => { 
-            console.log("error in http request", error.message)
+            //console.log("error in http request", error.message)
             resolve(false)})
     })
 }
 
 async function checkUrl(input) {
-    console.log("starting function")
+    //console.log("starting function")
     
 
     if (input.slice(0, 8) == 'https://') {
-        console.log("it is a https link")
+        //console.log("it is a https link")
         const result_https = await urlcheck_https(input)
         return result_https
 
     }
 
     else if (input.slice(0, 7) == "http://") {
-        console.log(input.slice(0, 7))
-        console.log("it is a http link")
+        //console.log(input.slice(0, 7))
+        //console.log("it is a http link")
         const result_http = await urlcheck_http(input)
         return result_http
 
     }
 
     else {
-        console.log("adding to input")
+        //console.log("adding to input")
         const https_input = "https://" + input
         const http_input = "http://" + input
         const result_https = await urlcheck_https(https_input)
@@ -99,6 +101,6 @@ async function checkUrl(input) {
 
 const url = 'goole.com'
 
-console.log(await checkUrl(url))
+//console.log(await checkUrl(url))
 
 export default checkUrl
