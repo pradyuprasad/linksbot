@@ -1,36 +1,28 @@
-import https from 'https'
-import cheerio from 'cheerio'
+import fetch from 'node-fetch';
+import { JSDOM } from 'jsdom';
+
+async function get_title(url) {
+
+    let response = await fetch(url)
+
+    const text = await response.text()
+
+    const dom = new JSDOM(text);
+
+    const title = dom.window.document.querySelector('title').textContent;
+    
+    return title;
 
 
-function getTitle(url, callback) {
-  https.get(url, (res) => {
-    let html = '';
 
-    // Receive data in chunks and append it to the html variable
-    res.on('data', (chunk) => {
-      html += chunk;
-    });
 
-    // Once all the data has been received
-    res.on('end', () => {
-      if (res.statusCode === 200) {
-        try {
-          // Load the received HTML into cheerio
-          const $ = cheerio.load(html);
-          // Extract the title text
-          const title = $('title').text();
-          callback(null, title);
-        } catch (error) {
-          callback(error);
-        }
-      } else {
-        callback(new Error('Request failed with status code: ' + res.statusCode));
-      }
-    });
-
-  }).on('error', (e) => {
-    callback(e);
-  });
 }
 
-export default getTitle
+const url = 'https://phet-dev.colorado.edu/html/build-an-atom/0.0.0-3/simple-text-only-test-page.html'
+
+async function TitleGet(url) {
+    const result = await get_title(url)
+    return result
+}
+
+export default TitleGet
