@@ -42,11 +42,10 @@ async function SaveText(ctx){
     
         else {
             console.log("tags exist")
-            const linkcheck = tags.map(await checkUrl)
-            Promise.all(linkcheck)
-            console.log(linkcheck)
-            /*const linkexists = linkcheck.reduce((a || b), true)
-            console.log(linkexists)*/
+            const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
+            console.log("linkcheck is ", linkcheck)
+            const linkexists = linkcheck.reduce((a, b) => (a || b), false)
+            console.log("link exists is", linkexists)
         }
 
     }
