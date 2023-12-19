@@ -1,6 +1,6 @@
 import { Snowflake } from "@theinternetfolks/snowflake";
-import {checkUrl} from './UrlChecker.js'
-//import getTitle from './GetTitle.js'
+import checkUrl from './UrlChecker.js'
+import getTitle from './GetTitle.js'
 
 async function SaveText(ctx, client){
 
@@ -28,7 +28,7 @@ async function SaveText(ctx, client){
     }
 
     else {
-        //const title = await getTitle(link)
+        const title = await getTitle(link)
         console.log("that is a valid link") // debug statement
 
         if (tags.length == 0) {
@@ -38,7 +38,7 @@ async function SaveText(ctx, client){
             //const link_title = title
             const telegram_id = ctx.update.message.from.id
             const timestamp = Date.now()
-            /*try {
+            try {
 
                 console.log("inserting")
 
@@ -56,7 +56,7 @@ async function SaveText(ctx, client){
                 ctx.reply(e)
                 console.log(e)
 
-            }*/
+            }
             
         }
     
