@@ -1,3 +1,13 @@
+import { createClient } from "@libsql/client/web"; 
+import { Snowflake } from "@theinternetfolks/snowflake";
+
+const client = createClient({
+    url: "libsql://links-pradyuprasad.turso.io",
+    authToken: process.env.TURSO_TOKEN 
+})
+
+
+
 async function CreateUser(ctx) { 
     
     const telegram_id = ctx.update.message.from.id
@@ -26,13 +36,10 @@ async function CreateUser(ctx) {
     }
 
     catch(e){
-        if((e.cause.message) === "SQLite error: UNIQUE constraint failed: users.telegram_id"){
-            ctx.reply("User has already been added")
-        }
-        else {
+        
             ctx.reply(`${e} happened, please try again!`);
 
-        }
+        
           
     }
         

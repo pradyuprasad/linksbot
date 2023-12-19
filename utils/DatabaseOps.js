@@ -1,4 +1,3 @@
-
 async function create_table_users(){
     const res = await client.execute("CREATE TABLE users (id TEXT PRIMARY KEY, telegram_id INTEGER UNIQUE, timestamp INTEGER);")
     console.log(res)

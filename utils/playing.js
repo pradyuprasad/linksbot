@@ -1,7 +1,12 @@
-import checkUrl from './UrlChecker.js'
+import { createClient } from "@libsql/client/web"; 
 
-const list = ['google.com', 'www.zoom.us']
+const client = createClient({
+    url: "libsql://links-pradyuprasad.turso.io",
+    authToken: process.env.TURSO_TOKEN 
+})
 
-const valid =  await Promise.all(list.map(x => !checkUrl(x)))
 
-console.log(valid)
+
+const result = await client.execute(`SELECT * FROM users`)
+
+console.log(result)

@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 
-async function get_title(url) {
+async function get_title(url) { 
 
     let response = await fetch(url)
 

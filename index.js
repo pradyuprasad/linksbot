@@ -18,6 +18,7 @@ const client = createClient({
     authToken: process.env.TURSO_TOKEN 
 })
 
+
 bot.start((ctx) => CreateUser(ctx))
 bot.on('text', (ctx) => SaveText(ctx))
 bot.launch()
