@@ -1,7 +1,8 @@
 async function get_replacement(link, client){
+    console.log(link)
 
-    const linkid = await client.execute('SELECT link_id from links where link_url = ?', link)
+    const linkid = await client.execute('SELECT * from links where link_url = ?', [link])
 
-    console.log(linkid.rows)
+    console.log(linkid)
 
 }
