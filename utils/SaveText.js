@@ -3,6 +3,13 @@ import checkUrl from './UrlChecker.js'
 import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
 
+async function get_replacement(link, client){
+
+    const linkid = await client.execute('SELECT ')
+
+}
+
+
 async function CheckForLinks(tags){
 
     const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))

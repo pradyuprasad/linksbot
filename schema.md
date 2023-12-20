@@ -4,7 +4,7 @@ CREATE TABLE users (id TEXT PRIMARY KEY, telegram_id INTEGER UNIQUE, timestamp I
 # Links table
 CREATE TABLE links (
     link_id TEXT PRIMARY KEY 
-    link_url TEXT // strip out all the useless stuff from the url
+    link_url TEXT UNIQUE // strip out all the useless stuff from the url
     link_title TEXT // find how to retrieve title from URL
     telegram_id INTEGER REFERENCES users(telegram_id) // from ctx
     timestamp INTEGER
