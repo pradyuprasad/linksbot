@@ -14,7 +14,7 @@ async function clearTable(tableName){
 }
 
 async function create_table_links(){
-    const res = await client.execute("CREATE TABLE links (link_id TEXT PRIMARY KEY, link_url TEXT, link_title TEXT, telegram_id INTEGER REFERENCES users(telegram_id), timestamp INTEGER);")
+    const res = await client.execute("CREATE TABLE links (link_id TEXT PRIMARY KEY, link_url TEXT UNIQUE, link_title TEXT, telegram_id INTEGER REFERENCES users(telegram_id), timestamp INTEGER);")
     console.log(res)
 }
 

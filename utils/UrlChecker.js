@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-function get_status(url) {
+export function get_status(url) {
     return new Promise((resolve, reject) => {
         fetch(url).then(response => {
             if (response.ok) {
@@ -16,7 +16,7 @@ function get_status(url) {
     });
 }
 
-async function status(url) {
+export async function status(url) {
     try {
         return await get_status(url);
     } catch (e) {
@@ -24,16 +24,33 @@ async function status(url) {
     }
 }
 
-async function checkUrl(input) {
-    if (!input.startsWith('http://') && !input.startsWith('https://')) {
-        input = 'https://' + input;
+export async function checkUrl(input) {
+    let input1 = 'https://' + input
+    let input2 = 'http://' + input
+
+    const input_status = await status(input)
+
+    if (input_status) {
+        return true
     }
-    console.log("Checking URL:", input);
-    return await status(input);
+
+    else {
+        const input1_status = await status(input1)
+
+        if (input1_status){
+            return true
+        }
+
+        else {
+            const input2_status = await status(input2)
+            return input2_status
+        }
+    }
+    
 }
 
 const url = 'gmail.com';
 //console.log(await checkUrl(url));
 
 
-export default checkUrl
+export default {checkUrl, status, get_status}

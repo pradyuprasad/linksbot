@@ -1,6 +1,7 @@
 import { Snowflake } from "@theinternetfolks/snowflake";
 import checkUrl from './UrlChecker.js'
 import getTitle from './GetTitle.js'
+import NormalizeUrl from './NormalizeUrl.js'
 
 async function CheckForLinks(tags){
 
@@ -29,7 +30,7 @@ async function SaveText(ctx, client){
 
     const input = ctx.update.message.text
     const split_input = input.split(' ')
-    const link = split_input[0]
+    let link = split_input[0]
     const tags = split_input.slice(1)
     console.log(tags) // debug statement
 
@@ -51,30 +52,44 @@ async function SaveText(ctx, client){
     }
 
     else {
-        const title = await getTitle(link)
-        console.log("that is a valid link") // debug statement
+        const Normalized_link = await NormalizeUrl(link)
+        console.log('The normalized URL is', Normalized_link)
+        const title = await getTitle(Normalized_link)
+        console.log("\nthat is a valid link\n") // debug statement
 
         const link_id = Snowflake.generate()
-        const link_url = link
+        const link_url = Normalized_link
         const link_title = title
         const telegram_id = ctx.update.message.from.id
         const timestamp = Date.now()
         try {
 
-            console.log("inserting")
+            console.log("\ninserting\n")
 
             const result = await client.execute({
                 sql:'INSERT INTO links(link_id, link_url, link_title, telegram_id, timestamp) values(:link_id, :link_url, :link_title, :telegram_id, :timestamp)',
                 
                 args : {link_id: link_id, link_url: link_url, link_title: link_title, telegram_id: telegram_id,  timestamp:timestamp}})
 
-            console.log(result)
+            console.log("\nlink insert is", result)
         }
 
         catch(e) {
-            console.log("error") // permanent reply
-            ctx.reply(e) // permanent reply
+            console.log("\nerror\n") // permanent reply
+
+            if (e.cause.message == "SQLite error: UNIQUE constraint failed: links.link_url") {
+
+                const error_reply = link + " has already been inserted"
+
+                ctx.reply(error_reply)
+                console.log("Unique constraint violated for", link)
+                return 
+
+            }
+
+            ctx.reply("error") // permanent reply
             console.log(e) // permanent
+            return 
         }
 
         if (tags.length > 0) {
@@ -85,7 +100,7 @@ async function SaveText(ctx, client){
 
                 if (result.length == 0) {
                     for (let i = 0; i < tags.length; i += 1) {
-                        console.log("this is run ", i)
+                        console.log("\nthis is run ", i, "\n")
                         const tag_id = Snowflake.generate()
                         const tag_name = tags[i]
 
@@ -103,7 +118,7 @@ async function SaveText(ctx, client){
                                 args: {link_id: link_id, tag_id: tag_id}
                             })
 
-                            console.log(link_tags_insert)
+                            console.log("\nlink tags insert result is", link_tags_insert)
 
                             ctx.reply("The link and tags have been inserted")
 
@@ -121,7 +136,7 @@ async function SaveText(ctx, client){
                 else {
 
                     for (let i = 0; i < tags.length; i += 1) {
-                        console.log("this is run with non-zero tags", i)
+                        console.log("this is run with non-zero results", i)
                         const search_tag = get_id(tags[i], result)
                         const tag_id = search_tag == null ? Snowflake.generate() : search_tag
                         const tag_name = tags[i]
@@ -129,13 +144,13 @@ async function SaveText(ctx, client){
                         if (search_tag == null) {
                             // if the tag does not exist before
                             try {
-
+                                console.log("this tag did not exist before", tag_name)
                                 const tag_insert = await client.execute({
                                     sql: 'insert into tags (tag_id, tag_name) values(:tag_id, :tag_name)',
                                     args: {tag_id: tag_id, tag_name: tag_name}
                                 })
     
-                                console.log(tag_insert)
+                                console.log("tags insert is", tag_insert)
                             }
 
                             catch(e) {
@@ -148,56 +163,55 @@ async function SaveText(ctx, client){
                     }
 
                         else {
+                            console.log("this tag did exist before", tag_name)
                             // do nothing because the tag is already inside the tags database
                         }
 
                         try {
+                            
                             const link_tags_insert = await client.execute({
                                 sql: 'insert into link_tags (link_id, tag_id) values(:link_id, :tag_id)',
                                 args: {link_id: link_id, tag_id: tag_id}
                             })
 
-                            console.log(link_tags_insert)
+                            console.log("link tags insert is", link_tags_insert)
 
-                            ctx.reply("The link and tags have been inserted")
+
 
 
                         }
 
                         catch(e) {
                             console.log("error")
-                            ctx.reply(e)
-                            console.log(e)
+                            if (e.cause.message == "SQLite error: UNIQUE constraint failed: link_tags.link_id, link_tags.tag_id") {
+                                ctx.reply("You can't insert the same tag repeatedly")
+                            }
+                            ctx.reply(e.cause.message)
+                            console.log(e.cause.message)
+                            return
                         }
-
                 }
+
+                ctx.reply("The link and tags have been inserted")
             } 
         }
-        
+
         catch(e){
 
             ctx.reply(e)
             console.log(e)
 
-        }
-
-            
+        }   
             
         }
 
         else {
             ctx.reply("The link has been inserted")
+            console.log("DONE")
         }
-        
-    
-    
+
 
     }
-
-
-    
-
-   
 
 }    
 

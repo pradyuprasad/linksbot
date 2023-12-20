@@ -9,7 +9,7 @@ async function NormalizeUrl(input) {
     const input_status = await status(input)
 
     if (input_status) {
-        return true
+        return input
     }
 
     else {
@@ -33,3 +33,4 @@ async function NormalizeUrl(input) {
 
 }
 
+export default NormalizeUrl
