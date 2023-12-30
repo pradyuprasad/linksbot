@@ -3,6 +3,7 @@ import {checkUrl} from './UrlChecker.js'
 import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
 import GetReplacement from './GetReplacement.js'
+import GetByTag from "./GetByTag.js";
 
 
 
@@ -86,7 +87,16 @@ async function SaveText(ctx, client){
     // link validation for tags
     const LinksInTags = await CheckForLinks(tags)
     if (link === "/get") {
-        return GetFunction(ctx, client)
+        if (tags.length != 1){
+            ctx.reply('Please insert only 1 tag!')
+            return 
+        }
+
+        else {
+            const output = await GetByTag(ctx, client, tags[0])
+            ctx.reply(output)
+
+        }
     }
     ////("the link validity is", valid_link) // debug statement
     else if (!valid_link){
