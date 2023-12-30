@@ -24,6 +24,6 @@ Also: implement SaveText using transactions so that it doesn't blow up next time
 ~~What does it do? If the user sends a link that has already been inserted, get_replacement takes in the link and the client object  and sends a string out with the link and all the tags associated with that link. //~~
 ~~Current guess is to get link id from link, find all tags associated with that link id, wrap all of those in a string and return string~~
 
-2. write general get function. user should input a tag and get all links associated with that tag (with THEIR username!!)
+2. ~~write general get function. user should input a tag and get all links associated with that tag (with THEIR username!!)~~
 3. write random function? to be deicded
 4. write remove function? remove a link and all associated link_tags with that link 

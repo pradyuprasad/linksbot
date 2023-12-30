@@ -12,6 +12,8 @@ import GetAll from "./GetAll.js";
 
 async function SaveText(ctx, client){
 
+    console.log(ctx.update.message.reply_to_message)
+
     const UserExists = await CheckUserExists(ctx, client)
     //(UserExists)
     if (!UserExists){
@@ -39,6 +41,7 @@ async function SaveText(ctx, client){
         else {
             const output = await GetByTag(ctx, client, tags[0])
             ctx.reply(output)
+            return 
 
         }
     }
