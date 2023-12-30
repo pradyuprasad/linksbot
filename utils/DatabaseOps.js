@@ -1,8 +1,3 @@
-async function create_table_users(){
-    const res = await client.execute("CREATE TABLE users ( telegram_id INTEGER PRIMARY KEY, timestamp INTEGER );")
-    console.log(res)
-}
-
 async function drop_table(table){
     const res = await client.execute(`drop table ${table};`)
     console.log(res)
@@ -11,6 +6,12 @@ async function drop_table(table){
 
 async function clearTable(tableName){ 
     let res = await client.execute(`DELETE FROM ${tableName}`)
+    console.log(res)
+}
+
+
+async function create_table_users(){
+    const res = await client.execute("CREATE TABLE users ( telegram_id INTEGER PRIMARY KEY, timestamp INTEGER );")
     console.log(res)
 }
 
