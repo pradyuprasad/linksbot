@@ -13,13 +13,13 @@ const client = createClient({
 
 async function drop_table(table){
     const res = await client.execute(`drop table ${table};`)
-    console.log(res)
+   // console.log((res)
 }
 
 
 async function clearTable(tableName){ 
     let res = await client.execute(`DELETE FROM ${tableName}`)
-    console.log(res)
+   // console.log((res)
 }
 
 bot.start((ctx) => CreateUser(ctx, client))

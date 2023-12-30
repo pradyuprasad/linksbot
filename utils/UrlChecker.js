@@ -6,11 +6,11 @@ export function get_status(url) {
             if (response.ok) {
                 resolve(true);
             } else {
-                //console.log("Response not ok:", response.status);
+                //("Response not ok:", response.status);
                 reject(false);
             }
         }).catch((error) => {
-            //console.log("Fetch error:", error.message);
+            //("Fetch error:", error.message);
             reject(false);
         });
     });
@@ -50,7 +50,7 @@ export async function checkUrl(input) {
 }
 
 const url = 'gmail.com';
-////console.log(await checkUrl(url));
+////(await checkUrl(url));
 
 
 export default {checkUrl, status, get_status}

@@ -13,7 +13,7 @@ async function CreateUser(ctx, client) {
                 timestamp: timestamp,
             },
         });
-        //console.log(result)
+        //(result)
         ctx.reply("User has been added")
     }
 

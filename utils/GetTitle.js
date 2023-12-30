@@ -18,7 +18,7 @@ async function get_title(url) {
 
     catch(e) {
 
-       ////console.log(e)
+       ////(e)
 
     }
 
@@ -40,7 +40,7 @@ async function get_title(url) {
 
     catch(e) {
 
-        ////console.log(e)
+        ////(e)
 
     }
 
@@ -61,7 +61,7 @@ async function get_title(url) {
     }
 
     catch(e){
-        ////console.log(e)
+        ////(e)
     }
 }
 
@@ -75,6 +75,6 @@ async function TitleGet(url) {
 
 const url = 'www.goole.com'
 
-////console.log(await TitleGet(url))
+////(await TitleGet(url))
 
 export default TitleGet

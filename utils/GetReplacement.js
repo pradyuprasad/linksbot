@@ -20,7 +20,7 @@ async function GetReplacement(ctx, client, link) {
             for(let i = 0; i < tags.length; i++){
                 output += i.toString() + ". " + tags[i] + "\n"
             }
-            //console.log(output)
+           // console.log((output)
             return output;
         }
     } catch (error) {
