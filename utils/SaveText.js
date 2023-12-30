@@ -2,6 +2,7 @@ import { Snowflake } from "@theinternetfolks/snowflake";
 import {checkUrl} from './UrlChecker.js'
 import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
+import GetReplacement from './GetReplacement.js'
 
 
 
@@ -14,6 +15,27 @@ async function CheckForLinks(tags){
     //console.log("link exists is", linkexists)
 
     return linkexists
+}
+
+async function LinkAlreadyInserted(ctx, client, link){
+    const telegram_id = ctx.update.message.from.id
+    const result = await client.execute({
+        sql : "select * from links where link_url = ? and telegram_id = ?",
+        args : [link, telegram_id]
+    })
+
+    console.log(result.rows.length)
+
+
+
+    if (result.rows.length > 0) {
+        console.log("result.rows.length > 0")
+        return true
+    }
+    else {
+        return false
+    }
+
 }
 
 
@@ -74,15 +96,21 @@ async function SaveText(ctx, client){
 
     else if (LinksInTags){
         
-    ctx.reply("One link at a time please") // permanent reply
+    ctx.reply("this link has already been inserted") // permanent reply
     return 
     }
+
 
     else {
 
         try {
 
         const Normalized_link = await NormalizeUrl(link)
+        if (await LinkAlreadyInserted(ctx, client, Normalized_link)){
+            const error_reply = await GetReplacement(ctx, client, Normalized_link)
+            ctx.reply(error_reply)
+            return
+        }
         //console.log('The normalized URL is', Normalized_link)
         const title = await getTitle(Normalized_link)
         //console.log("\nthat is a valid link\n") // debug statement
@@ -110,7 +138,9 @@ async function SaveText(ctx, client){
 
             if (e.cause.message == "SQLite error: UNIQUE constraint failed: links.link_url") {
 
-                const error_reply = Normalized_link + " has already been inserted"
+
+                const error_reply = await GetReplacement(ctx, client, Normalized_link)
+                console.log(error_reply)
 
                 ctx.reply(error_reply)
                 //console.log("Unique constraint violated for", Normalized_link)

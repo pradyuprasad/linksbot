@@ -11,6 +11,17 @@ const client = createClient({
     authToken: process.env.TURSO_TOKEN 
 })
 
+async function drop_table(table){
+    const res = await client.execute(`drop table ${table};`)
+    console.log(res)
+}
+
+
+async function clearTable(tableName){ 
+    let res = await client.execute(`DELETE FROM ${tableName}`)
+    console.log(res)
+}
+
 bot.start((ctx) => CreateUser(ctx, client))
 bot.on('text', (ctx) => SaveText(ctx, client))
 bot.launch()

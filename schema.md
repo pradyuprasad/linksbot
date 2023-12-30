@@ -7,7 +7,7 @@ CREATE TABLE users (
 -- Links Table
 CREATE TABLE links (
     link_id TEXT PRIMARY KEY,
-    link_url TEXT UNIQUE,
+    link_url TEXT,
     link_title TEXT,
     telegram_id INTEGER REFERENCES users(telegram_id),
     timestamp INTEGER
