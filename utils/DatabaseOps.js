@@ -21,11 +21,11 @@ async function create_table_links(){
 }
 
 async function create_table_tags(){
-    const res = await client.execute("CREATE TABLE tags ( tag_id TEXT, tag_name TEXT, telegram_id INTEGER, PRIMARY KEY (tag_name, telegram_id), FOREIGN KEY (telegram_id) REFERENCES users(telegram_id) );")
+    const res = await client.execute("CREATE TABLE tags ( tag_id TEXT UNIQUE, tag_name TEXT, telegram_id INTEGER, PRIMARY KEY (tag_name, telegram_id), FOREIGN KEY (telegram_id) REFERENCES users(telegram_id) );")
     console.log(res)
 }
 
 async function create_table_linktags(){
-    const res = await client.execute("CREATE TABLE link_tags ( link_id TEXT, tag_id TEXT, telegram_id INTEGER, PRIMARY KEY (link_id, tag_id, telegram_id), FOREIGN KEY (link_id) REFERENCES links(link_id), FOREIGN KEY (tag_id, telegram_id) REFERENCES tags(tag_id, telegram_id), FOREIGN KEY (telegram_id) REFERENCES users(telegram_id) );")
+    const res = await client.execute("CREATE TABLE link_tags ( link_id TEXT, tag_id TEXT, telegram_id INTEGER, PRIMARY KEY (link_id, tag_id, telegram_id), FOREIGN KEY (link_id) REFERENCES links(link_id), FOREIGN KEY (tag_id) REFERENCES tags(tag_id), FOREIGN KEY (telegram_id) REFERENCES users(telegram_id) );")
     console.log(res)
 }

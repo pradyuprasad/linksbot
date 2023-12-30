@@ -7,7 +7,7 @@ async function CreateUser(ctx, client) {
         const timestamp = Date.now()
         
         const result = await client.execute({
-            sql: "INSERT INTO users (id, telegram_id, timestamp) values (:id, :telegram_id, :timestamp)",
+            sql: "INSERT INTO users (telegram_id, timestamp) values (:telegram_id, :timestamp)",
             args: {
                 telegram_id: telegram_id,
                 timestamp: timestamp,

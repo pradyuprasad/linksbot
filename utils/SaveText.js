@@ -1,5 +1,5 @@
 import { Snowflake } from "@theinternetfolks/snowflake";
-import checkUrl from './UrlChecker.js'
+import {checkUrl} from './UrlChecker.js'
 import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
 
@@ -9,12 +9,13 @@ import NormalizeUrl from './NormalizeUrl.js'
 async function CheckForLinks(tags){
 
     const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
-    //console.log("linkcheck is ", linkcheck)
+    console.log("linkcheck is ", linkcheck)
     const linkexists = linkcheck.reduce((a, b) => (a || b), false)
-    //console.log("link exists is", linkexists)
+    console.log("link exists is", linkexists)
 
     return linkexists
 }
+
 
 function get_id(tag, result) {
     const found = result.find(element => element.tag_name == tag)
@@ -29,11 +30,32 @@ function get_id(tag, result) {
     }
 }
 
+async function CheckUserExists(ctx, client) {
+    const telegram_id = ctx.update.message.from.id
+    const res = await client.execute("select * from users")
+    const data = res.rows
+    const found = data.find(item => item.telegram_id == telegram_id)
+    if (found === undefined) {
+        return false
+    }
+    else {
+        return true
+    }
+}
+
 async function SaveText(ctx, client){
+
+    const UserExists = await CheckUserExists(ctx, client)
+    console.log(UserExists)
+    if (!UserExists){
+        ctx.reply("You have not been added yet. Please type /start to start")
+        return
+    }
 
     const input = ctx.update.message.text
     const split_input = input.split(' ')
     let link = split_input[0]
+    console.log("the link is", link)
     const tags = split_input.slice(1)
     console.log(tags) // debug statement
 
@@ -41,9 +63,11 @@ async function SaveText(ctx, client){
     const valid_link = await checkUrl(link)
     // link validation for tags
     const LinksInTags = await CheckForLinks(tags)
-
-    console.log("the link validity is", valid_link) // debug statement
-    if (!valid_link){
+    if (link === "/get") {
+        return GetFunction(ctx, client)
+    }
+    //console.log("the link validity is", valid_link) // debug statement
+    else if (!valid_link){
         ctx.reply("that link is not valid") // permanent reply
         return
     }
@@ -85,10 +109,10 @@ async function SaveText(ctx, client){
 
             if (e.cause.message == "SQLite error: UNIQUE constraint failed: links.link_url") {
 
-                const error_reply = link + " has already been inserted"
+                const error_reply = Normalized_link + " has already been inserted"
 
                 ctx.reply(error_reply)
-                console.log("Unique constraint violated for", link)
+                console.log("Unique constraint violated for", Normalized_link)
                 return 
 
             }
@@ -113,15 +137,26 @@ async function SaveText(ctx, client){
                         try {
 
                             const tag_insert = await client.execute({
-                                sql: 'insert into tags (tag_id, tag_name) values(:tag_id, :tag_name)',
-                                args: {tag_id: tag_id, tag_name: tag_name}
+                                sql: 'insert into tags (tag_id, tag_name, telegram_id) values(:tag_id, :tag_name, :telegram_id)',
+                                args: {tag_id: tag_id, tag_name: tag_name, telegram_id: telegram_id}
                             })
-
                             console.log(tag_insert)
 
+                        }
+
+                        catch(e) {
+                            console.log("tags insert error")
+                            ctx.reply(e)
+                            console.log(e)
+                        }
+
+
+                        try {
+                            
+
                             const link_tags_insert = await client.execute({
-                                sql: 'insert into link_tags (link_id, tag_id) values(:link_id, :tag_id)',
-                                args: {link_id: link_id, tag_id: tag_id}
+                                sql: 'insert into link_tags (link_id, tag_id, telegram_id) values(:link_id, :tag_id, :telegram_id)',
+                                args: {link_id: link_id, tag_id: tag_id, telegram_id:telegram_id}
                             })
 
                             console.log("\nlink tags insert result is", link_tags_insert)
@@ -130,11 +165,17 @@ async function SaveText(ctx, client){
 
                         }
 
-                        catch(e) {
-                            console.log("error")
-                            ctx.reply(e)
-                            console.log(e)
-                        }
+
+                    catch(e) {
+
+                        console.log("Link_tags insert error")
+                        ctx.reply(e)
+                        console.log(e)
+                        return
+
+
+                    }
+
                     }
 
                 }
@@ -152,16 +193,16 @@ async function SaveText(ctx, client){
                             try {
                                 console.log("this tag did not exist before", tag_name)
                                 const tag_insert = await client.execute({
-                                    sql: 'insert into tags (tag_id, tag_name) values(:tag_id, :tag_name)',
-                                    args: {tag_id: tag_id, tag_name: tag_name}
+                                    sql: 'insert into tags (tag_id, tag_name, telegram_id) values(:tag_id, :tag_name, :telegram_id)',
+                                    args: {tag_id: tag_id, tag_name: tag_name, telegram_id:telegram_id}
                                 })
     
                                 console.log("tags insert is", tag_insert)
                             }
 
                             catch(e) {
-                                console.log("error")
-                                ctx.reply(e)
+                                console.log("tags insert error")
+                                ctx.reply("tags insert error")
                                 console.log(e)
 
                             }
@@ -174,10 +215,13 @@ async function SaveText(ctx, client){
                         }
 
                         try {
-                            
+
+                            console.log("link_id is", link_id)
+                            console.log("tag_id is", tag_id)
+                            console.log("telegram_id is", telegram_id)
                             const link_tags_insert = await client.execute({
-                                sql: 'insert into link_tags (link_id, tag_id) values(:link_id, :tag_id)',
-                                args: {link_id: link_id, tag_id: tag_id}
+                                sql: 'insert into link_tags (link_id, tag_id, telegram_id) values(:link_id, :tag_id, :telegram_id)',
+                                args: {link_id: link_id, tag_id: tag_id, telegram_id:telegram_id}
                             })
 
                             console.log("link tags insert is", link_tags_insert)
@@ -188,12 +232,12 @@ async function SaveText(ctx, client){
                         }
 
                         catch(e) {
-                            console.log("error")
+                            console.log("link tags error")
                             if (e.cause.message == "SQLite error: UNIQUE constraint failed: link_tags.link_id, link_tags.tag_id") {
                                 ctx.reply("You can't insert the same tag repeatedly")
                             }
-                            ctx.reply(e.cause.message)
-                            console.log(e.cause.message)
+                            ctx.reply("link tags error")
+                            console.log(e)
                             return
                         }
                 }

@@ -1,5 +1,5 @@
 
-import status from './UrlChecker.js'
+import {status} from './UrlChecker.js'
 
 async function NormalizeUrl(input) {
 

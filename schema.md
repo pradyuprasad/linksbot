@@ -29,6 +29,6 @@ CREATE TABLE link_tags (
     telegram_id INTEGER,
     PRIMARY KEY (link_id, tag_id, telegram_id),
     FOREIGN KEY (link_id) REFERENCES links(link_id),
-    FOREIGN KEY (tag_id, telegram_id) REFERENCES tags(tag_id, telegram_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id),
     FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
 );
