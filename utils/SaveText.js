@@ -4,67 +4,11 @@ import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
 import GetReplacement from './GetReplacement.js'
 import GetByTag from "./GetByTag.js";
+import GetAll from "./GetAll.js";
 
 
 
 
-async function CheckForLinks(tags){
-
-    const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
-    //("linkcheck is ", linkcheck)
-    const linkexists = linkcheck.reduce((a, b) => (a || b), false)
-    //("link exists is", linkexists)
-
-    return linkexists
-}
-
-async function LinkAlreadyInserted(ctx, client, link){
-    const telegram_id = ctx.update.message.from.id
-    const result = await client.execute({
-        sql : "select * from links where link_url = ? and telegram_id = ?",
-        args : [link, telegram_id]
-    })
-
-   // console.log((result.rows.length)
-
-
-
-    if (result.rows.length > 0) {
-       // console.log(("result.rows.length > 0")
-        return true
-    }
-    else {
-        return false
-    }
-
-}
-
-
-function get_id(tag, result) {
-    const found = result.find(element => element.tag_name == tag)
-    if (found) {
-
-        return found.tag_id
-
-    }
-
-    else {
-        return null
-    }
-}
-
-async function CheckUserExists(ctx, client) {
-    const telegram_id = ctx.update.message.from.id
-    const res = await client.execute("select * from users")
-    const data = res.rows
-    const found = data.find(item => item.telegram_id == telegram_id)
-    if (found === undefined) {
-        return false
-    }
-    else {
-        return true
-    }
-}
 
 async function SaveText(ctx, client){
 
@@ -98,6 +42,13 @@ async function SaveText(ctx, client){
 
         }
     }
+
+    else if (link === "/get_all") {
+        const output = await GetAll(ctx, client)
+        ctx.reply(output)
+        return
+    }
+
     ////("the link validity is", valid_link) // debug statement
     else if (!valid_link){
         ctx.reply("that link is not valid") // permanent reply
@@ -315,3 +266,61 @@ async function SaveText(ctx, client){
 
     
 export default SaveText
+
+async function CheckForLinks(tags){
+
+    const linkcheck = await Promise.all(tags.map(tag => checkUrl(tag)))
+    //("linkcheck is ", linkcheck)
+    const linkexists = linkcheck.reduce((a, b) => (a || b), false)
+    //("link exists is", linkexists)
+
+    return linkexists
+}
+
+async function LinkAlreadyInserted(ctx, client, link){
+    const telegram_id = ctx.update.message.from.id
+    const result = await client.execute({
+        sql : "select * from links where link_url = ? and telegram_id = ?",
+        args : [link, telegram_id]
+    })
+
+   // console.log((result.rows.length)
+
+
+
+    if (result.rows.length > 0) {
+       // console.log(("result.rows.length > 0")
+        return true
+    }
+    else {
+        return false
+    }
+
+}
+
+
+function get_id(tag, result) {
+    const found = result.find(element => element.tag_name == tag)
+    if (found) {
+
+        return found.tag_id
+
+    }
+
+    else {
+        return null
+    }
+}
+
+async function CheckUserExists(ctx, client) {
+    const telegram_id = ctx.update.message.from.id
+    const res = await client.execute("select * from users")
+    const data = res.rows
+    const found = data.find(item => item.telegram_id == telegram_id)
+    if (found === undefined) {
+        return false
+    }
+    else {
+        return true
+    }
+}
