@@ -14,9 +14,9 @@ helper functions to write
 3. get title from url DONE
 
 things to do after trip
-0. REWRITE link_tags database. Link tags at the moment does not map a certain link, tag with a specific user. so if user A and user B give out the same link and tag mapping there would be a unique error. What is the fix? 
+~~0. REWRITE link_tags database. Link tags at the moment does not map a certain link, tag with a specific user. so if user A and user B give out the same link and tag mapping there would be a unique error. What is the fix?~~ 
 
-Write a new database with all 3 as primary key (link_id, tag_id and user_id). Perhaps also consider making the tags user_specific? that is changing the tags database also such that tags are strong along with the user. no global tags, each tag is stored with the user id so we can ensure no leakeage. the primary key will be tag_id but user A cannot store the same tag twice
+~~Write a new database with all 3 as primary key (link_id, tag_id and user_id). Perhaps also consider making the tags user_specific? that is changing the tags database also such that tags are strong along with the user. no global tags, each tag is stored with the user id so we can ensure no leakeage. the primary key will be tag_id but user A cannot store the same tag twice~~
 
 1. write get_replacement(link, client) function //
 What does it do? If the user sends a link that has already been inserted, get_replacement takes in the link and the client object  and sends a string out with the link and all the tags associated with that link. //
