@@ -24,7 +24,7 @@ For example, '/get_tag health' gives you all your links about health. \n`
         }
 
         else {
-            const output = await GetByTag(ctx, client, tags[0])
+            const output = await GetByTag(ctx, client, others[0])
             ctx.reply(output)
             return 
 
