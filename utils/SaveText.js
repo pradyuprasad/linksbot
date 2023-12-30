@@ -5,14 +5,12 @@ import NormalizeUrl from './NormalizeUrl.js'
 import GetReplacement from './GetReplacement.js'
 import GetByTag from "./GetByTag.js";
 import GetAll from "./GetAll.js";
-
+import CommandHandler from "./CommandHandler.js";
 
 
 
 
 async function SaveText(ctx, client){
-
-    console.log(ctx.update.message.reply_to_message)
 
     const UserExists = await CheckUserExists(ctx, client)
     //(UserExists)
@@ -32,7 +30,10 @@ async function SaveText(ctx, client){
     const valid_link = await checkUrl(link)
     // link validation for tags
     const LinksInTags = await CheckForLinks(tags)
-    if (link === "/get") {
+    if (input[0] ==="/"){
+        return CommandHandler(ctx, client, input);
+    }
+    else if (link === "/get") {
         if (tags.length != 1){
             ctx.reply('Please insert only 1 tag!')
             return 
@@ -77,6 +78,8 @@ async function SaveText(ctx, client){
         }
         //('The normalized URL is', Normalized_link)
         const title = await getTitle(Normalized_link)
+        console.log(title)
+        ctx.reply(title)
         //("\nthat is a valid link\n") // debug statement
 
         const link_id = Snowflake.generate()
@@ -159,7 +162,7 @@ async function SaveText(ctx, client){
 
                             //("\nlink tags insert result is", link_tags_insert)
 
-                            ctx.reply("The link and tags have been inserted")
+                            
 
                         }
 
@@ -175,6 +178,7 @@ async function SaveText(ctx, client){
                     }
 
                     }
+                    ctx.reply("The link and tags have been inserted")
 
                 }
 
