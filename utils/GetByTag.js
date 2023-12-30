@@ -16,9 +16,9 @@ async function GetByTag(ctx, client, tag){
         const result = await client.execute({sql, args})
         const links = result.rows.map(row => row.link_url)
         console.log(links)
-        const output = `The links associated with ${tag} are:`
+        let output = `The links associated with ${tag} are:` + "\n"
         for (let i = 0; i < links.length; i ++){
-            output += i.toString() + ". " + links[i]
+            output += (i+1).toString() + ". " + links[i] + " \n"
         }
 
         console.log(output)
@@ -28,7 +28,7 @@ async function GetByTag(ctx, client, tag){
 
     catch(e){
         console.log(e)
-        return e
+        return "there has been some error"
 
     }
 
