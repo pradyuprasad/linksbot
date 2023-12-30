@@ -55,6 +55,9 @@ async function SaveText(ctx, client){
     }
 
     else {
+
+        try {
+
         const Normalized_link = await NormalizeUrl(link)
         console.log('The normalized URL is', Normalized_link)
         const title = await getTitle(Normalized_link)
@@ -213,7 +216,11 @@ async function SaveText(ctx, client){
             console.log("DONE")
         }
 
-
+        } 
+        catch(e) {
+            console.log(e)
+            ctx.reply(e)
+        }
     }
 
 }    
