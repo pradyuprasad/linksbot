@@ -1,29 +1,34 @@
-# Users Table
-CREATE TABLE users (id TEXT PRIMARY KEY, telegram_id INTEGER UNIQUE, timestamp INTEGER);
-
-# Links table
-CREATE TABLE links (
-    link_id TEXT PRIMARY KEY 
-    link_url TEXT UNIQUE // strip out all the useless stuff from the url
-    link_title TEXT // find how to retrieve title from URL
-    telegram_id INTEGER REFERENCES users(telegram_id) // from ctx
+-- Users Table
+CREATE TABLE users (
+    telegram_id INTEGER PRIMARY KEY,
     timestamp INTEGER
-    
-
 );
 
-# Tags table
+-- Links Table
+CREATE TABLE links (
+    link_id TEXT PRIMARY KEY,
+    link_url TEXT UNIQUE,
+    link_title TEXT,
+    telegram_id INTEGER REFERENCES users(telegram_id),
+    timestamp INTEGER
+);
+
+-- Tags Table
 CREATE TABLE tags (
-    tag_id TEXT PRIMARY KEY
-    tag_name TEXT UNIQUE
-)
+    tag_id TEXT,
+    tag_name TEXT,
+    telegram_id INTEGER,
+    PRIMARY KEY (tag_name, telegram_id),
+    FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+);
 
-# link_tags table
-
+-- link_tags Table
 CREATE TABLE link_tags (
-    link_id TEXT
-    tag_id TEXT
-    PRIMARY KEY (link_id, tag_id)
-    FOREIGN KEY (link_id) REFERENCES links(link_id)
-    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
-)
+    link_id TEXT,
+    tag_id TEXT,
+    telegram_id INTEGER,
+    PRIMARY KEY (link_id, tag_id, telegram_id),
+    FOREIGN KEY (link_id) REFERENCES links(link_id),
+    FOREIGN KEY (tag_id, telegram_id) REFERENCES tags(tag_id, telegram_id),
+    FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+);
