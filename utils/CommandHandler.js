@@ -1,11 +1,16 @@
 import GetByTag from "./GetByTag.js";
 import GetAll from "./GetAll.js";
+import {checkUrl} from "./UrlChecker.js"
+import NormalizeUrl from "./NormalizeUrl.js";
 
 
 async function CommandHandler(ctx, client, input){
-    const help = `You can get all your links with the /get_all command. \n
+    const help = `You can add links by sending them with the tags after it. For example 'website.com tag1 tag2' adds website.com to  with two tags called tag1 and tag2. \n
+Do note that tags are single word only. So for example 'randomwebsite.com machine learning' will add en.wikipedia.org/wiki/Andrew_Ng with 2 tags: machine and learning. 
+You can get all your links with the /get_all command. \n
 You can get all links for a specific tag with the /get_tag command and the specific tag. \n
-For example, '/get_tag health' gives you all your links about health. \n`
+For example, '/get_tag health' gives you all your links about health. \n
+To delete a link reply to it with the the /delete message.`
 
     const split_input = input.split(' ')
     let command = split_input[0]
@@ -38,11 +43,63 @@ For example, '/get_tag health' gives you all your links about health. \n`
         return
     }
 
+    else if (command == "/delete"){
+        if (ctx.update.message.reply_to_message == undefined){
+            ctx.reply("The delete command should be used as a reply to the link and tags you want to delete")
+            return 
+        }
+
+        else {
+            const old_message = ctx.update.message.reply_to_message
+            const old_text = old_message.text
+            const split_input = old_text.split(' ')
+            let link = await NormalizeUrl(split_input[0])
+            if (link == null){
+                ctx.reply("You aren't deleting a link. Please reply to a message with a link")
+                return
+            }
+
+            else {
+
+                const telegram_id = ctx.update.message.from.id;
+
+                try {
+
+                    const res = await client.execute({
+                        sql: "SELECT link_id FROM links WHERE telegram_id = ? AND link_url = ?",
+                        args: [telegram_id, link]
+                    })
+
+                    const link_id_to_delete = res.rows[0].link_id
+
+                    const del = await client.execute({
+                        sql: "DELETE FROM link_tags WHERE link_id = ?",
+                        args: [link_id_to_delete]
+                    })
+
+                    const del_link = await client.execute({
+                        sql: "DELETE FROM links WHERE link_id = ?",
+                        args: [link_id_to_delete]
+                    })
+
+                    ctx.reply("It has been deleted")
+    
+
+                }
+
+                catch(e){
+                    console.log(e)
+                    ctx.reply("Error in deleting")
+                }
+
+            }
+            
+        }
+    }
+
     else {
         ctx.reply("That wasn't right. Type /help for a list of commands")
     }
-
-
 
 }
 

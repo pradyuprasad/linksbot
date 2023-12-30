@@ -26,9 +26,9 @@ Also: implement SaveText using transactions so that it doesn't blow up next time
 
 2. ~~write general get function. user should input a tag and get all links associated with that tag (with THEIR username!!)~~
 3. write random function? to be deicded
-4. write remove function? remove a link and all associated link_tags with that link 
+4. ~~write remove function? remove a link and all associated link_tags with that link ~~
 
 Suggestions
 1. Split by website (command to get all reddit links, khan academy links)
 2. Automatic tagging
-3. 
+3. PDF search???

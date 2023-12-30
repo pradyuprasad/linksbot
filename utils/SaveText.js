@@ -12,6 +12,7 @@ import CommandHandler from "./CommandHandler.js";
 
 async function SaveText(ctx, client){
 
+
     const UserExists = await CheckUserExists(ctx, client)
     //(UserExists)
     if (!UserExists){
