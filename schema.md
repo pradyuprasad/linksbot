@@ -2,6 +2,7 @@
 CREATE TABLE users (
     telegram_id INTEGER PRIMARY KEY,
     timestamp INTEGER
+    url_id TEXT UNIQUE
 );
 
 -- Links Table

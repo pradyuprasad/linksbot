@@ -1,12 +1,11 @@
 import GetByTag from "./GetByTag.js";
 import GetAll from "./GetAll.js";
-import {checkUrl} from "./UrlChecker.js"
 import NormalizeUrl from "./NormalizeUrl.js";
 
 
 async function CommandHandler(ctx, client, input){
     const help = `You can add links by sending them with the tags after it. For example 'website.com tag1 tag2' adds website.com to  with two tags called tag1 and tag2. \n
-Do note that tags are single word only. So for example 'randomwebsite.com machine learning' will add en.wikipedia.org/wiki/Andrew_Ng with 2 tags: machine and learning. 
+Do note that tags are single word only. So for example 'randomwebsite.com machine learning' will add randomwebsite.com with 2 tags: machine and learning. 
 You can get all your links with the /get_all command. \n
 You can get all links for a specific tag with the /get_tag command and the specific tag. \n
 For example, '/get_tag health' gives you all your links about health. \n
@@ -17,9 +16,24 @@ To delete a link reply to it with the the /delete message.`
     //("the link is", link)
     const others = split_input.slice(1)
     //(tags) // debug statement
+    const telegram_id = ctx.update.message.from.id;
 
     if (command === "/help") {
         ctx.reply(help)
+    }
+
+    else if (command === "/url_id"){
+
+        const res1 = await client.execute({
+            sql: "SELECT url_id FROM users where telegram_id = ?",
+            args: [telegram_id]
+        })
+
+        const url_id = res1.rows[0].url_id
+
+        ctx.reply(`url id is: ${url_id}`)
+        console.log(`url id is: ${url_id}`)
+        
     }
 
     else if (command === "/get_tag"){
@@ -61,7 +75,7 @@ To delete a link reply to it with the the /delete message.`
 
             else {
 
-                const telegram_id = ctx.update.message.from.id;
+                
 
                 try {
 

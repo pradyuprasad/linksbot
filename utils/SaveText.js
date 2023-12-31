@@ -3,8 +3,6 @@ import {checkUrl} from './UrlChecker.js'
 import getTitle from './GetTitle.js'
 import NormalizeUrl from './NormalizeUrl.js'
 import GetReplacement from './GetReplacement.js'
-import GetByTag from "./GetByTag.js";
-import GetAll from "./GetAll.js";
 import CommandHandler from "./CommandHandler.js";
 
 

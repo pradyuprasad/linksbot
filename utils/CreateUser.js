@@ -1,3 +1,4 @@
+import { Snowflake } from "@theinternetfolks/snowflake";
 
 async function CreateUser(ctx, client) { 
     
@@ -5,12 +6,14 @@ async function CreateUser(ctx, client) {
 
     try {
         const timestamp = Date.now()
+        const url_id = Snowflake.generate()
         
         const result = await client.execute({
-            sql: "INSERT INTO users (telegram_id, timestamp) values (:telegram_id, :timestamp)",
+            sql: "INSERT INTO users (telegram_id, timestamp, url_id) values (:telegram_id, :timestamp, :url_id)",
             args: {
                 telegram_id: telegram_id,
                 timestamp: timestamp,
+                url_id: url_id
             },
         });
         //(result)
