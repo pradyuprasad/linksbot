@@ -9,6 +9,7 @@ Do note that tags are single word only. So for example 'randomwebsite.com machin
 You can get all your links with the /get_all command. \n
 You can get all links for a specific tag with the /get_tag command and the specific tag. \n
 For example, '/get_tag health' gives you all your links about health. \n
+To get your url use /get_url. \n
 To delete a link reply to it with the the /delete message.`
 
     const split_input = input.split(' ')
@@ -22,7 +23,7 @@ To delete a link reply to it with the the /delete message.`
         ctx.reply(help)
     }
 
-    else if (command === "/url_id"){
+    else if (command === "/get_url"){
 
         const res1 = await client.execute({
             sql: "SELECT url_id FROM users where telegram_id = ?",
