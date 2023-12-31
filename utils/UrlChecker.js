@@ -26,7 +26,7 @@ export async function status(url) {
     try {
         return await get_status(url);
     } catch (e) {
-        console.log("Error in status function:", e);
+        //console.log("Error in status function:", e);
         return false;
     }
 }
