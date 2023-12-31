@@ -17,7 +17,6 @@ async function CreateUser(ctx, client) {
             },
         });
         //(result)
-        const output = 
         ctx.reply("Welcome to Nutmeg Linksbot. Press /help to see all commands. \n To insert a link just paste it")
     }
 
