@@ -15,6 +15,9 @@ async function GetByTag(ctx, client, tag){
 
         const result = await client.execute({sql, args})
         const links = result.rows.map(row => row.link_url)
+        if (result.rows.length === 0) {
+            return "There are no links associated with that tag"
+        }
         console.log(links)
         let output = `The links associated with ${tag} are:` + "\n"
         for (let i = 0; i < links.length; i ++){
