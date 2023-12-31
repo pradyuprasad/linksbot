@@ -27,9 +27,3 @@ bot.on('text', (ctx) => SaveText(ctx, client))
 bot.launch()
 
 
-
-   
-
-
-
-

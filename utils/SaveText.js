@@ -14,18 +14,14 @@ async function SaveText(ctx, client){
 
 
     const UserExists = await CheckUserExists(ctx, client)
-    //(UserExists)
-    if (!UserExists){
+    if (!UserExists === true){
         ctx.reply("You have not been added yet. Please type /start to start")
-        return
     }
 
     const input = ctx.update.message.text
     const split_input = input.split(' ')
     let link = split_input[0]
-    //("the link is", link)
     const tags = split_input.slice(1)
-    //(tags) // debug statement
 
     // we start input validation on the link
     const valid_link = await checkUrl(link)
@@ -34,52 +30,39 @@ async function SaveText(ctx, client){
     if (input[0] ==="/"){
         return CommandHandler(ctx, client, input);
     }
-    else if (link === "/get") {
-        if (tags.length != 1){
-            ctx.reply('Please insert only 1 tag!')
-            return 
-        }
 
-        else {
-            const output = await GetByTag(ctx, client, tags[0])
-            ctx.reply(output)
-            return 
-
-        }
-    }
-
-    else if (link === "/get_all") {
-        const output = await GetAll(ctx, client)
-        ctx.reply(output)
-        return
-    }
-
-    ////("the link validity is", valid_link) // debug statement
-    else if (!valid_link){
+     // debug statement
+    else if (!valid_link === true){
         ctx.reply("that link is not valid") // permanent reply
-        return
+        
     }
 
     else if (LinksInTags){
         
-    ctx.reply("this link has already been inserted") // permanent reply
-    return 
+    ctx.reply("this link has already been inserted") // permanent reply 
     }
 
 
     else {
+        console.log("the link validity is", valid_link)
 
         try {
 
         const Normalized_link = await NormalizeUrl(link)
-        if (await LinkAlreadyInserted(ctx, client, Normalized_link)){
+        if (await LinkAlreadyInserted(ctx, client, Normalized_link) === true){
             const error_reply = await GetReplacement(ctx, client, Normalized_link)
             ctx.reply(error_reply)
             return
+            
         }
         //('The normalized URL is', Normalized_link)
         const title = await getTitle(Normalized_link)
-        console.log(title)
+        if (title == null || title == undefined){
+            console.log("no title lmfao")
+            ctx.reply("Unable to get title")
+            return 
+        }
+        console.log("title is", title)
         ctx.reply(title)
         //("\nthat is a valid link\n") // debug statement
 
@@ -102,9 +85,12 @@ async function SaveText(ctx, client){
         }
 
         catch(e) {
+            console.log(e)
+            console.log("error at link insertion")
+            
             //("\nerror\n") // permanent reply
 
-            if (e.cause.message == "SQLite error: UNIQUE constraint failed: links.link_url") {
+            if (e.cause.message === "SQLite error: UNIQUE constraint failed: links.link_url") {
 
 
                 const error_reply = await GetReplacement(ctx, client, Normalized_link)
@@ -112,13 +98,13 @@ async function SaveText(ctx, client){
 
                 ctx.reply(error_reply)
                 //("Unique constraint violated for", Normalized_link)
-                return 
+                 
 
             }
 
-            ctx.reply("error") // permanent reply
+            ctx.reply("error at link insertion") // permanent reply
             //(e) // permanent
-            return 
+             
         }
 
         if (tags.length > 0) {
@@ -130,7 +116,7 @@ async function SaveText(ctx, client){
                 })
                 const result = search.rows
 
-                if (result.length == 0) {
+                if (result.length === 0) {
                     for (let i = 0; i < tags.length; i += 1) {
                         //("\nthis is run ", i, "\n")
                         const tag_id = Snowflake.generate()
@@ -147,8 +133,9 @@ async function SaveText(ctx, client){
                         }
 
                         catch(e) {
+                            console.log("error at tag insertion")
                             //("tags insert error")
-                            ctx.reply(e)
+                            ctx.reply("tags insert error")
                             //(e)
                         }
 
@@ -170,10 +157,12 @@ async function SaveText(ctx, client){
 
                     catch(e) {
 
+                        console.log("error at link-tag insertion")
+
                         //("Link_tags insert error")
-                        ctx.reply(e)
+                        ctx.reply("error")
                         //(e)
-                        return
+                        
 
 
                     }
@@ -191,7 +180,7 @@ async function SaveText(ctx, client){
                         const tag_id = search_tag == null ? Snowflake.generate() : search_tag
                         const tag_name = tags[i]
 
-                        if (search_tag == null) {
+                        if (search_tag === null) {
                             // if the tag does not exist before
                             try {
                                 //("this tag did not exist before", tag_name)
@@ -204,6 +193,7 @@ async function SaveText(ctx, client){
                             }
 
                             catch(e) {
+                                console.log("error at tag insertion")
                                 //("tags insert error")
                                 ctx.reply("tags insert error")
                                 //(e)
@@ -235,8 +225,9 @@ async function SaveText(ctx, client){
                         }
 
                         catch(e) {
+                            console.log("error at link tag insertion")
                             //("link tags error")
-                            if (e.cause.message == "SQLite error: UNIQUE constraint failed: link_tags.link_id, link_tags.tag_id") {
+                            if (e.cause.message === "SQLite error: UNIQUE constraint failed: link_tags.link_id, link_tags.tag_id") {
                                 ctx.reply("You can't insert the same tag repeatedly")
                             }
                             ctx.reply("link tags error")
@@ -250,8 +241,9 @@ async function SaveText(ctx, client){
         }
 
         catch(e){
+            console.log("error at link-tag isnertion #3")
 
-            ctx.reply(e)
+            ctx.reply("error")
             //(e)
 
         }   
@@ -265,8 +257,9 @@ async function SaveText(ctx, client){
 
         } 
         catch(e) {
-            //(e)
-            ctx.reply(e)
+            console.log("general error")
+            console.log(e)
+            ctx.reply("error")
         }
     }
 

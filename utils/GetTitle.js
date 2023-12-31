@@ -4,6 +4,15 @@ import { JSDOM } from 'jsdom';
 
 async function get_title(url) { 
 
+
+    if (url.startsWith("twitter.com") ||url.startsWith("x.com") || url.startsWith("https://twitter.com") || url.startsWith("https://x.com")){
+        return "Twitter"
+    }
+
+    else {
+
+    
+
     try {
 
     let response = await fetch(url)
@@ -63,6 +72,8 @@ async function get_title(url) {
     catch(e){
         ////(e)
     }
+
+}
 }
 
 
@@ -73,8 +84,7 @@ async function TitleGet(url) {
     return result
 }
 
-const url = 'www.goole.com'
+const url = 'https://twitter.com/diviacaroline/status/1741330495479156944'
 
-////(await TitleGet(url))
-
+//console.log(await TitleGet(url))
 export default TitleGet

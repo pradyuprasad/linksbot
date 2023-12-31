@@ -8,7 +8,11 @@ async function NormalizeUrl(input) {
 
     const input_status = await status(input)
 
-    if (input_status) {
+    if (input.startsWith("twitter.com") ||input.startsWith("x.com") || input.startsWith("https://twitter.com") || input.startsWith("https://x.com")){
+        return input
+    }
+
+    else if (input_status) {
         return input
     }
 
