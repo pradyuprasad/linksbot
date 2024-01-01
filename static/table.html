@@ -42,23 +42,26 @@
                 return;
             }
 
+            // Assuming data.rows is an array of arrays as shown in your console log
             const links = data.rows;
             console.log('Links:', links); // Log the links array
 
             const tableBody = document.getElementById('linksTable').getElementsByTagName('tbody')[0];
-            links.forEach(link => {
-                console.log('Link object:', link); // Log each link object
+            links.forEach(linkArray => { // Now linkArray is expected instead of a link object
+                console.log('Link array:', linkArray); // Log each link array
                 const row = tableBody.insertRow();
                 const cell1 = row.insertCell(0);
                 const cell2 = row.insertCell(1);
-                cell1.innerHTML = `<a href="${link.link_url}" target="_blank">${link.link_url}</a>`;
-                cell2.innerText = link.link_title;
+                // linkArray[0] is the URL, linkArray[1] is the title
+                cell1.innerHTML = `<a href="${linkArray[0]}" target="_blank">${linkArray[0]}</a>`;
+                cell2.innerText = linkArray[1];
             });
         })
         .catch(error => {
             console.error('Fetch Error:', error);
         });
 }
+
 
     </script>
     </body>
