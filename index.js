@@ -29,6 +29,29 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'static/index.html'));
 } )
 
+ app.get('/url/:url_id', async (req, res) => {
+    
+    res.sendFile(path.join(__dirname, 'static/table.html'))
+
+});
+
+app.get('/get_links/:url_id', async (req, res) => {
+    console.log("get links is called!")
+    const urlId = req.params.url_id;
+    try {
+        const result = await client.execute({
+            sql: "SELECT link_url, link_title FROM links JOIN users ON links.telegram_id = users.telegram_id WHERE users.url_id = ?",
+            args: [urlId]
+        });
+
+        console.log(result)
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).send('Server Error');
+    }
+});
+
 
 app.listen(port, () => {
     console.log("Express is working")

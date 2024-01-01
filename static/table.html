@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links Table</title>
+</head>
+<body>
+    <h1>Links Table</h1>
+
+    <table id="linksTable">
+        <thead>
+            <tr>
+                <th>Link</th>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchLinks();
+        });
+    
+        function fetchLinks() {
+    const urlId = new URL(window.location.href).pathname.split('/')[2];
+
+    fetch(`/get_links/${urlId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received:', data); // Log the entire received data
+            if (!data || !data.rows) {
+                console.error('No data or no rows property in data:', data);
+                return;
+            }
+
+            const links = data.rows;
+            console.log('Links:', links); // Log the links array
+
+            const tableBody = document.getElementById('linksTable').getElementsByTagName('tbody')[0];
+            links.forEach(link => {
+                console.log('Link object:', link); // Log each link object
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                cell1.innerHTML = `<a href="${link.link_url}" target="_blank">${link.link_url}</a>`;
+                cell2.innerText = link.link_title;
+            });
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+        });
+}
+
+    </script>
+    </body>
+</html>
