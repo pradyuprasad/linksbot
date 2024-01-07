@@ -93,16 +93,24 @@ async function SaveText(ctx, client){
 
                 const error_reply = await GetReplacement(ctx, client, Normalized_link)
                // console.log((error_reply)
-
-                ctx.reply(error_reply)
-                //("Unique constraint violated for", Normalized_link)
+                try{
+                    ctx.reply(error_reply)
+                }//("Unique constraint violated for", Normalized_link)
+                catch (e){
+                    console.log(e)
+                    ctx.reply("Error in getting replacement!")
+                }
                  
 
             }
-
-            ctx.reply("error at link insertion") // permanent reply
+            try{
+                ctx.reply("error at link insertion") // permanent reply
             //(e) // permanent
-             
+            }
+
+            catch(e){
+                ctx.reply("error!")
+            }
         }
 
         if (tags.length > 0) {
