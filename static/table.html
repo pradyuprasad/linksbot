@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Links</title>
+
+    <style>
+	table, th, td {
+		border: 1px solid black
+	}
+    </style>
+</head>
+<body>
+    <table id = "LinksTable">
+    </table>
+    <script>
+	async function filltable() {
+    const URL_id = window.location.href.split('/').slice(-1)[0];
+    const request = `/get_links/${URL_id}`;
+    console.log(request);
+
+    try {
+        const response = await fetch(request);
+        if (!response.ok) {
+            throw new Error(`Error! HTTP status is ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Data is ", data.rows);
+        const table = document.getElementById('LinksTable');
+
+        // Header Row Setup
+        const headerRow = document.createElement('tr');
+        const urlHeader = document.createElement('th');
+        urlHeader.textContent = 'URL';
+        const titleHeader = document.createElement('th');
+        titleHeader.textContent = 'Title';
+        const deleteHeader = document.createElement('th');
+        deleteHeader.textContent = 'Delete';
+        const tagHeader = document.createElement('th');
+        tagHeader.textContent = 'Tags';
+        
+        headerRow.appendChild(urlHeader);
+        headerRow.appendChild(titleHeader);
+        headerRow.appendChild(deleteHeader);
+        headerRow.appendChild(tagHeader);
+        table.appendChild(headerRow);
+
+        // Process each row
+        for (const row of data.rows) {
+            const tr = document.createElement('tr');
+            const urlCell = document.createElement('td');
+            const titleCell = document.createElement('td');
+            const deleteCell = document.createElement('td');
+            const tagCell = document.createElement('td');
+            const button = document.createElement('input');
+
+            urlCell.textContent = row[0];
+            titleCell.textContent = row[1];
+
+            const tags = await GetTags(row[2]);
+	    console.log("tags are", tags)
+            tagCell.textContent = tags;
+
+            button.onclick = DeleteThing(row[2]);
+            button.type = 'button';
+            button.value = 'Delete';
+            deleteCell.appendChild(button);
+
+            tr.appendChild(urlCell);
+            tr.appendChild(titleCell);
+            tr.appendChild(deleteCell);
+            tr.appendChild(tagCell);
+            table.appendChild(tr);
+        }
+    } catch (error) {
+        console.error("Error in filltable:", error);
+    }
+}
+
+	    function DeleteThing(link_id) {
+		    return function() {
+			const request = `/delete_link/${link_id}`;
+			fetch(request)
+			    .then(response => {
+				if (!response.ok) {
+				    throw new Error(`Error! HTTP status is ${response.status}`);
+				}
+				return response.json(); // Assuming the server sends a JSON response
+			    })
+			    .then(data => {
+				// Display an alert for successful deletion
+				alert("Link deleted successfully.");
+				// Refresh the page
+				location.reload();
+			    })
+			    .catch(error => {
+				// Display an alert for an unsuccessful deletion
+				alert("Error deleting link: " + error.message);
+			    });
+		    };
+		}
+	async function GetTags(link_id) {
+    console.log("Getting tags for link_id:", link_id);
+    const request = `/get_tags/${link_id}`;
+
+    try {
+        const response = await fetch(request);
+        if (!response.ok) {
+            throw new Error(`Error! HTTP Status is ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Received data for tags:", data);
+
+        let output = '';
+        if (data.rows && data.rows.length === 0) {
+            output = 'No Tags for this';
+        } else if (data.rows) {
+            output = data.rows.join(', ');
+        }
+
+        console.log("Output for tags:", output);
+        return output;
+    } catch (error) {
+        console.error("Error fetching tags:", error);
+        return 'Error fetching tags';
+    }
+}
+
+
+	    filltable()
+    </script>
+</body>
+</html>
